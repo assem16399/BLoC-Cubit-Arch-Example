@@ -1,7 +1,9 @@
-import 'package:bloc_arch_example/features/posts/logic/cubit/my_posts_cubit.dart';
-import 'package:bloc_arch_example/features/posts/presentation/screens/edit_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '/features/posts/presentation/screens/edit_post_screen.dart';
+import '../../logic/bloc/posts_bloc.dart';
+import '../widgets/post_list_item.dart';
 
 class PostsOverviewScreen extends StatefulWidget {
   const PostsOverviewScreen({Key? key}) : super(key: key);
@@ -16,8 +18,8 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
     // TODO: implement initState
 
     super.initState();
-    //BlocProvider.of<PostsBloc>(context).add(GetAllPostsEvent());
-    BlocProvider.of<MyPostsCubit>(context).getAllPosts();
+    BlocProvider.of<PostsBloc>(context).add(GetAllPostsEvent());
+    //BlocProvider.of<MyPostsCubit>(context).getAllPosts();
   }
 
   @override
@@ -37,18 +39,18 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: BlocBuilder<MyPostsCubit, MyPostsState>(
+          child: BlocBuilder<PostsBloc, PostsState>(
             builder: (context, state) {
-              if (state is MyPostsLoadingState) {
+              if (state is PostsLoadingState) {
                 return const Center(
                   child: CircularProgressIndicator.adaptive(),
                 );
-              } else if (state is MyPostsGettingAllDataFailedState) {
+              } else if (state is PostsGettingAllDataFailedState) {
                 return Center(
                     child: Text(state.failMsg,
                         style: Theme.of(context).textTheme.headline6));
               }
-              final posts = BlocProvider.of<MyPostsCubit>(context).posts;
+              final posts = BlocProvider.of<PostsBloc>(context).posts;
               return posts.isEmpty
                   ? Center(
                       child: Text(
@@ -59,26 +61,9 @@ class _PostsOverviewScreenState extends State<PostsOverviewScreen> {
                   : ListView.separated(
                       separatorBuilder: (_, __) => const Divider(),
                       itemCount: posts.length,
-                      itemBuilder: (_, index) => Card(
-                            elevation: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      posts[index].title,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(posts[index].body),
-                                  ],
-                                ),
-                              ),
-                            ),
+                      itemBuilder: (_, index) => PostListItem(
+                            title: posts[index].title,
+                            body: posts[index].body,
                           ));
             },
           ),

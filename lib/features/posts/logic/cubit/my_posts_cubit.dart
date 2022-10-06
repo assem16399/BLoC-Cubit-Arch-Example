@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:bloc_arch_example/core/strings/success_strings.dart';
 
+import '/core/strings/success_strings.dart';
 import '../../data/models/post.dart';
 import '../../data/repo/posts_repo.dart';
 

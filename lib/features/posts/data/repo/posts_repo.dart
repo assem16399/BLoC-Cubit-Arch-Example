@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
-import '/core/errors/exceptions.dart';
 import '/core/errors/failures.dart';
 import '/core/network/network_info.dart';
 import '/features/posts/data/provider/posts_api.dart';
@@ -14,7 +13,7 @@ abstract class PostsRepo {
 
   Future<Either<Failure, Unit>> updatePost(Post post);
 
-  Future<Either<Failure, Unit>> deletePost(int id);
+  Future<Either<Failure, Unit>> deletePost(String id);
 }
 
 class PostsRepoImpl implements PostsRepo {
@@ -45,6 +44,8 @@ class PostsRepoImpl implements PostsRepo {
         return Left(TimeoutFailure());
       }
       return Left(ServerFailure());
+    } catch (_) {
+      return Left(UndefinedFailure());
     }
   }
 
@@ -55,7 +56,7 @@ class PostsRepoImpl implements PostsRepo {
   }
 
   @override
-  Future<Either<Failure, Unit>> deletePost(int id) async {
+  Future<Either<Failure, Unit>> deletePost(String id) async {
     return await _handlePostOperation(() => postsApi.deletePost(id));
   }
 
@@ -72,7 +73,7 @@ class PostsRepoImpl implements PostsRepo {
       try {
         await postOperation();
         return const Right(unit);
-      } on ServerException catch (error) {
+      } on DioError catch (error) {
         if (error.type == DioErrorType.connectTimeout) {
           return Left(TimeoutFailure());
         }

@@ -1,8 +1,8 @@
-import 'package:bloc_arch_example/features/posts/logic/cubit/my_posts_cubit.dart';
+import 'package:bloc_arch_example/features/posts/logic/bloc/posts_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/features/posts/presentation/widgets/default_text_field.dart';
+import '../../../../core/components/widgets/default_text_field.dart';
 import '../../data/models/post.dart';
 
 class EditPostScreen extends StatefulWidget {
@@ -31,6 +31,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
               children: [
                 DefaultTextField(
                   onSaved: (value) {
+                    //post.title = value;
                     post = post.copyWith(title: value);
                   },
                   label: 'Title',
@@ -47,19 +48,19 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   contentVerticalPadding: 16,
                 ),
                 const SizedBox(height: 20),
-                BlocListener<MyPostsCubit, MyPostsState>(
+                BlocListener<PostsBloc, PostsState>(
                   listener: (context, state) {
                     // TODO: implement listener
-                    if (state is MyPostsOperationSuccessState) {
+                    if (state is PostsOperationSuccessState) {
                       Navigator.of(context).pop();
                     }
                   },
                   child: ElevatedButton(
                       onPressed: () {
                         _formKey.currentState!.save();
-                        // BlocProvider.of<PostsBloc>(context)
-                        //     .add(AddPostEvent(post));
-                        BlocProvider.of<MyPostsCubit>(context).addNewPost(post);
+                        BlocProvider.of<PostsBloc>(context)
+                            .add(AddPostEvent(post));
+                        //BlocProvider.of<MyPostsCubit>(context).addNewPost(post);
                       },
                       child: Text(
                         'Add New Post',

@@ -1,8 +1,4 @@
-import 'package:dio/dio.dart';
-
-class ServerException extends DioError implements Exception {
-  ServerException({required super.requestOptions});
-}
+class ServerException implements Exception {}
 
 class NoInternetException implements Exception {}
 

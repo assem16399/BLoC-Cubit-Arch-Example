@@ -1,17 +1,17 @@
-import 'package:bloc_arch_example/core/network/remote/dio_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
-const kPostsEndpoint = '/posts.json';
+import '/core/network/remote/dio_helper.dart';
+import '../../../../core/components/constants/endpoints.dart';
 
 abstract class PostsApi {
   Future<Map<String, dynamic>> getPosts();
   Future<Unit> updatePost(Map<String, dynamic> postRawData);
-  Future<Unit> deletePost(int postId);
+  Future<Unit> deletePost(String postId);
   Future<Unit> addPost(Map<String, dynamic> postRawData);
 }
 
-class PostsApiWithDioImpl extends PostsApi {
+class PostsApiWithDioImpl implements PostsApi {
   @override
   Future<Unit> addPost(Map<String, dynamic> postRawData) async {
     await DioHelper.postRequest(path: kPostsEndpoint, data: postRawData);
@@ -19,7 +19,7 @@ class PostsApiWithDioImpl extends PostsApi {
   }
 
   @override
-  Future<Unit> deletePost(int postId) async {
+  Future<Unit> deletePost(String postId) async {
     await DioHelper.deleteRequest(path: '$kPostsEndpoint/$postId');
     return unit;
   }

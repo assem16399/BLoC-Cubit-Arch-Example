@@ -1,0 +1,1 @@
+const kPostsEndpoint = '/posts.json';
